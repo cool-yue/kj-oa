@@ -9,7 +9,7 @@
         vertical
       ></v-divider>
       <v-spacer></v-spacer>
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="700px">
         <v-btn slot="activator" color="primary" dark class="mb-2">添加人员</v-btn>
 
         <v-card>
@@ -21,28 +21,61 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.code" label="编号"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.name" label="姓名"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.gender" label="性别"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.degree" label="学历"></v-text-field>
+                  <v-text-field v-model="editedItem.racial" label="民族"></v-text-field>
+                </v-flex>
+                 <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.birthOrigin" label="籍贯"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.code" label="编号"></v-text-field>
+                  <v-select :items="degreeItems" v-model="editedItem.degree" label="学历"></v-select>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-select :items="politicalItems" label="政治面貌" v-model="editedItem.political"></v-select>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.identityNum" label="身份证号"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.tel" label="电话"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.joinWorkDate" label="参与工作时间"></v-text-field>
+                  <v-text-field v-model="editedItem.graduateSchool" label="毕业学校"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.joinSjyDate" label="进入设计院时间"></v-text-field>
+                  <time-picker v-model="editedItem.graduateDate" label="毕（肄）业时间"></time-picker>
+                </v-flex>
+                 <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.major" label="所学专业"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.contractEndDate" label="合同到期时间"></v-text-field>
+                  <time-picker v-model="editedItem.joinWorkDate" label="参与工作时间"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.workAge" label="工龄"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <time-picker v-model="editedItem.joinSjyDate" label="进入设计院时间"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-select :items="contractTypeItems" v-model="editedItem.contractType" label="合同类型"></v-select>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <time-picker v-model="editedItem.contractEndDate" label="合同到期时间"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.name" label="现任职称"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.name" label="低一级职称"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -117,10 +150,14 @@
 </template>
 <script>
   import PeopleManagementSearchBar from "./PeopleManagementSearchBar";
+  import timePicker from "../shared/timePicker"
   export default {
     name:"peopleManagement",
     data () {
       return {
+        politicalItems:["群众","共青团员","中共党员"],
+        degreeItems:["专科","本科","硕士研究生","博士研究生"],
+        contractTypeItems:["有固定期限","无固定期限","人才派遣","劳务派遣","劳务分包"],
         dialog: false,
         editedItem:{},
         selected: [],
@@ -208,7 +245,8 @@
       }
     },
     components:{
-      PeopleManagementSearchBar
+      PeopleManagementSearchBar,
+      timePicker
     },
     provide() {
       return {
