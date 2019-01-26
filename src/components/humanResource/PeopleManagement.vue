@@ -21,61 +21,61 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.code" label="编号"></v-text-field>
+                  <v-text-field v-model="editedItem.code" label="编号" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="姓名"></v-text-field>
+                  <v-text-field v-model="editedItem.name" label="姓名" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.gender" label="性别"></v-text-field>
+                  <v-text-field v-model="editedItem.gender" label="性别" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.racial" label="民族"></v-text-field>
+                  <v-text-field v-model="editedItem.racial" label="民族" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.birthOrigin" label="籍贯"></v-text-field>
+                  <v-text-field v-model="editedItem.birthOrigin" label="籍贯" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-select :items="degreeItems" v-model="editedItem.degree" label="学历"></v-select>
+                  <v-select :items="degreeItems" v-model="editedItem.degree" label="学历" :readonly="isViewDetail"></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-select :items="politicalItems" label="政治面貌" v-model="editedItem.political"></v-select>
+                  <v-select :items="politicalItems" label="政治面貌" v-model="editedItem.political" :readonly="isViewDetail"></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.identityNum" label="身份证号"></v-text-field>
+                  <v-text-field v-model="editedItem.identityNum" label="身份证号" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.tel" label="电话"></v-text-field>
+                  <v-text-field v-model="editedItem.tel" label="电话" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.graduateSchool" label="毕业学校"></v-text-field>
+                  <v-text-field v-model="editedItem.graduateSchool" label="毕业学校" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <time-picker v-model="editedItem.graduateDate" label="毕（肄）业时间"></time-picker>
+                  <time-picker v-model="editedItem.graduateDate" label="毕（肄）业时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
                  <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.major" label="所学专业"></v-text-field>
+                  <v-text-field v-model="editedItem.major" label="所学专业" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <time-picker v-model="editedItem.joinWorkDate" label="参与工作时间"></time-picker>
+                  <time-picker v-model="editedItem.joinWorkDate" label="参与工作时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.workAge" label="工龄"></v-text-field>
+                  <v-text-field v-model="editedItem.workAge" label="工龄" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <time-picker v-model="editedItem.joinSjyDate" label="进入设计院时间"></time-picker>
+                  <time-picker v-model="editedItem.joinSjyDate" label="进入设计院时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-select :items="contractTypeItems" v-model="editedItem.contractType" label="合同类型"></v-select>
+                  <v-select :items="contractTypeItems" v-model="editedItem.contractType" label="合同类型" :readonly="isViewDetail"></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <time-picker v-model="editedItem.contractEndDate" label="合同到期时间"></time-picker>
+                  <time-picker v-model="editedItem.contractEndDate" label="合同到期时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="现任职称"></v-text-field>
+                  <v-text-field v-model="editedItem.name" label="现任职称" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="低一级职称"></v-text-field>
+                  <v-text-field v-model="editedItem.name" label="低一级职称" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -83,14 +83,15 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">取消</v-btn>
-            <v-btn color="blue darken-1" flat @click="save">确定</v-btn>
+            <v-btn color="blue darken-1" flat @click="close" >{{ closeModal }}</v-btn>
+            <v-btn color="blue darken-1" flat @click="save" v-if="!isViewDetail || editedIndex === -1">确定</v-btn>
           </v-card-actions>
         </v-card>
 
       </v-dialog>
-      <v-btn  color="primary" dark class="mb-2" @click="">批量导入</v-btn>
-      <v-btn  color="error" dark class="mb-2" @click="">批量删除</v-btn>
+      <input type="file" ref="file" v-show="false" @change="handleImport($event)"/>
+      <v-btn  color="primary" dark class="mb-2" @click="importItem">批量导入</v-btn>
+      <v-btn  color="error" dark class="mb-2" @click="showDelete" :disabled="deleteActivate">删除</v-btn>
     </v-toolbar>
 
   <v-data-table
@@ -99,7 +100,7 @@
     :items="humanList"
     item-key="name"
     select-all
-    :rows-per-page="10"
+    :pagination.sync = tableDefaultSetting
     class="elevation-1"
   >
     <template slot="items" slot-scope="props">
@@ -122,12 +123,13 @@
       <td class="justify-center layout px-0">
           <v-icon
             small
-            class="mr-2"
+            class="ml-2 mr-2"
             title="编辑"
-            @click="editItem(props.item)"
+            @click="showItem(props.item,false)"
           >
             edit
           </v-icon>
+          <!--
           <v-icon
             small
             title="删除"
@@ -136,25 +138,32 @@
           >
             delete
           </v-icon>
+          -->
           <v-icon
             small
             title="详情"
-            @click="showDetail(props.item)"
+            @click="showItem(props.item,true)"
           >
             details
           </v-icon>
       </td>
     </template>
   </v-data-table>
+  <delete-modal v-model="showDeleteModal" @delete="deleteItem"></delete-modal>
   </div>
 </template>
 <script>
   import PeopleManagementSearchBar from "./PeopleManagementSearchBar";
-  import timePicker from "../shared/timePicker"
+  import timePicker from "../shared/timePicker";
+  import deleteModal from "../shared/DeleteModal";
+  import { tableDefaultSetting } from "../shared/config.js";
   export default {
     name:"peopleManagement",
     data () {
       return {
+        showDeleteModal:false,
+        isViewDetail:false,
+        tableDefaultSetting,
         politicalItems:["群众","共青团员","中共党员"],
         degreeItems:["专科","本科","硕士研究生","博士研究生"],
         contractTypeItems:["有固定期限","无固定期限","人才派遣","劳务派遣","劳务分包"],
@@ -183,8 +192,8 @@
             code: 6666,
             tel: "13378333333",
             joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinSjyDate:'2018-01-11',
+            contractEndDate:'2018-01-22'
           },
           {
             name: 'B',
@@ -194,8 +203,8 @@
             code: 6666,
             tel: "13378333333",
             joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinSjyDate:'2018-01-02',
+            contractEndDate:'2018-01-03'
           },
           {
             name: 'C',
@@ -204,9 +213,9 @@
             degree: "本科",
             code: 6666,
             tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinWorkDate: '2018-01-04',
+            joinSjyDate:'2018-01-05',
+            contractEndDate:'2018-01-06'
           },
           {
             name: 'D',
@@ -215,9 +224,9 @@
             degree: "本科",
             code: 6666,
             tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinWorkDate: '2018-01-07',
+            joinSjyDate:'2018-01-08',
+            contractEndDate:'2018-01-09'
           },
           {
             name: 'E',
@@ -226,9 +235,9 @@
             degree: "本科",
             code: 6666,
             tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinWorkDate: '2018-01-10',
+            joinSjyDate:'2018-01-11',
+            contractEndDate:'2018-01-11'
           },
           {
             name: 'F',
@@ -237,16 +246,17 @@
             degree: "本科",
             code: 6666,
             tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-01',
-            contractEndDate:'2018-01-01'
+            joinWorkDate: '2018-01-12',
+            joinSjyDate:'2018-01-13',
+            contractEndDate:'2018-01-14'
           }
         ]
       }
     },
     components:{
       PeopleManagementSearchBar,
-      timePicker
+      timePicker,
+      deleteModal
     },
     provide() {
       return {
@@ -255,18 +265,40 @@
     },
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? '添加人员' : '编辑人员'
+        return this.editedIndex === -1 ? '添加人员' : this.isViewDetail?'人员详细':'编辑人员';
+      },
+      closeModal() {
+        return this.isViewDetail === true ? "关闭" : "取消";
+      },
+      deleteActivate() {
+        return this.selected.length === 0;
       }
     },
     methods:{
-      editItem(item) {
+      showItem(item,isViewDetail) {
+        this.isViewDetail = isViewDetail;
         this.editedIndex = this.humanList.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
-      deleteItem(item) {
-        const index = this.humanList.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.humanList.splice(index, 1)
+      showDelete(item) {
+        //const index = this.humanList.indexOf(item)
+        //confirm('Are you sure you want to delete this item?') && this.humanList.splice(index, 1)
+        this.showDeleteModal = true;
+      },
+      deleteItem() {
+        console.log(this.selected);
+        this.selected.forEach(item => {
+          let index = this.humanList.indexOf(item);
+          this.humanList.splice(index, 1);
+        });
+        this.selected = [];
+      },
+      importItem() {
+         this.$refs.file.click();
+      },
+      handleImport(event) {
+          console.log(event.target.files);
       },
       close () {
           this.dialog = false
@@ -277,16 +309,12 @@
       },
       save() {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.humanList[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          this.humanList.unshift(this.editedItem)
         }
         this.close()
-      },
-      showDetail(item) {
-        console.log(item);
-      },
-      deleteMultiple() {}
+      }
     },
     watch:{
       selected:function(newVal) {

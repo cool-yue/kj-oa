@@ -1,5 +1,7 @@
 <template>
-  <v-menu
+  <div>
+  <v-text-field v-if="readonly" :label="label" v-model="date" readonly></v-text-field>
+  <v-menu v-if="!readonly"
     ref="menu"
     :close-on-content-click="false"
     v-model="menu"
@@ -20,10 +22,12 @@
   ></v-text-field>
   <v-date-picker v-model="date" no-title scrollable locale="zh-cn">
     <v-spacer></v-spacer>
+    <v-btn flat color="primary" @click="date=''">重置</v-btn>
     <v-btn flat color="primary" @click="menu = false">取消</v-btn>
-    <v-btn flat color="primary" @click="$refs.menu.save(date)">确认</v-btn>
+    <v-btn flat color="primary" @click="$refs.menu.save(date);$emit('input',date)">确认</v-btn>
   </v-date-picker>
 </v-menu>
+</div>
 </template>
 
 <script>
@@ -34,10 +38,16 @@
         menu: false
       }),
       props:{
-        label:String
+        label:String,
+        value:String,
+        readonly:Boolean
       },
-      updated() {
-          console.log(this.date);
+      watch:{
+        value:function(newValue,oldValue) {
+          this.date = newValue;
+        },
+        date:function(newValue) {
+        }
       }
     }
 </script>

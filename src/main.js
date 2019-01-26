@@ -3,9 +3,17 @@ import './plugins/vuetify'
 import App from './App.vue'
 import Login from './Login.vue'
 
+
+
 Vue.config.productionTip = false;
-let isLogin = true;
+Vue.prototype.$notify = function(type,message) {
+    console.log(this.$root.$refs);
+    this.$root.$refs.alert.show = true;
+    setTimeout(()=>{
+      this.$root.$refs.alert.show = false;
+    },3000);
+}
 
 new Vue({
-  render: h => isLogin?h(App):h(Login)
+  render: h => h(App),
 }).$mount('#app')
