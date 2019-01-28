@@ -52,9 +52,11 @@
               Object.keys(this.search).forEach((key)=>{
                 this.search[key] = "";
               });
+              this.peopleManagementComp.humanList = this.peopleManagementComp.cachedHumanList;
           },
           searchRequest() {
             console.log(this.search);
+            this.peopleManagementComp.getUserList(undefined,undefined,this.search)
           }
         }
     }

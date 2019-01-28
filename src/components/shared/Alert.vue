@@ -1,5 +1,5 @@
 <template>
-  <div id="alertContainer" v-if="show">
+  <div id="alertContainer">
     <v-alert
       :value="type ==='success'"
       type="success"
@@ -31,11 +31,6 @@
 </template>
 <script>
      export default {
-         data() {
-             return {
-                 show:false
-             }
-         },
          props:{
              type:{
                 type:String,
@@ -50,11 +45,7 @@
 </script>
 <style scoped>
 #alertContainer {
-    position:fixed;
-    min-width:160px;
-    top:-10px;;
-    left:40%;
-    right:40%;
-    z-index:999;
+    width:100%;
+    text-align:center;
 }
 </style>

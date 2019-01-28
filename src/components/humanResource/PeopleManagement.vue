@@ -24,7 +24,7 @@
                   <v-text-field v-model="editedItem.code" label="编号" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="姓名" :readonly="isViewDetail"></v-text-field>
+                  <v-text-field v-model="editedItem.userName" label="姓名" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.gender" label="性别" :readonly="isViewDetail"></v-text-field>
@@ -71,11 +71,24 @@
                 <v-flex xs12 sm6 md4>
                   <time-picker v-model="editedItem.contractEndDate" label="合同到期时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
+                <v-flex xs12 sm12 md12><div></div></v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="现任职称" :readonly="isViewDetail"></v-text-field>
+                  <v-text-field v-model="editedItem.currentTitle" label="现任专业技术资格名称" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.name" label="低一级职称" :readonly="isViewDetail"></v-text-field>
+                  <time-picker v-model="editedItem.currentTitleGetDate" label="取得资格时间" :readonly="isViewDetail"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <time-picker v-model="editedItem.currentTitleHireDate" label="聘任起始时间" :readonly="isViewDetail"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field v-model="editedItem.preTitle" label="低一级专业技术资格名称" :readonly="isViewDetail"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <time-picker v-model="editedItem.preTitleGetDate" label="取得资格时间" :readonly="isViewDetail"></time-picker>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <time-picker v-model="editedItem.preTitleGetHireDate" label="聘任起始时间" :readonly="isViewDetail"></time-picker>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -98,10 +111,12 @@
     v-model="selected"
     :headers="headers"
     :items="humanList"
-    item-key="name"
+    item-key="uid"
     select-all
-    :pagination.sync = tableDefaultSetting
+    :pagination.sync="tableDefaultSetting"
+    :total-items = "total"
     class="elevation-1"
+    @update:pagination = "handlePagination"
   >
     <template slot="items" slot-scope="props">
       <td>
@@ -111,7 +126,8 @@
           hide-details
         ></v-checkbox>
       </td>
-      <td>{{ props.item.name }}</td>
+      <!--<td class="text-xs-center">{{ props.item.uid }}</td>-->
+      <td>{{ props.item.userName }}</td>
       <td class="text-xs-center">{{ props.item.age }}</td>
       <td class="text-xs-center">{{ props.item.gender }}</td>
       <td class="text-xs-center">{{ props.item.degree }}</td>
@@ -157,6 +173,8 @@
   import timePicker from "../shared/timePicker";
   import deleteModal from "../shared/DeleteModal";
   import { tableDefaultSetting } from "../shared/config.js";
+  import {transferDatabaseData,transferLocalData} from "./model.js";
+  import { hasNoKey } from '../../utils/utils.js';
   export default {
     name:"peopleManagement",
     data () {
@@ -168,11 +186,38 @@
         degreeItems:["专科","本科","硕士研究生","博士研究生"],
         contractTypeItems:["有固定期限","无固定期限","人才派遣","劳务派遣","劳务分包"],
         dialog: false,
-        editedItem:{},
+        editedItem:{
+          birthOrigin:"",
+          code:"",
+          contractEndDate: "",
+          contractType:"",
+          currentTitle: "",
+          currentTitleGetDate: "",
+          currentTitleHireDate: "",
+          degree: "",
+          gender: "",
+          graduateDate: "",
+          graduateSchool: "",
+          identityNum: "",
+          joinSjyDate: "",
+          joinWorkDate: "",
+          major: "",
+          userName: "",
+          political: "",
+          preTitle: "",
+          preTitleGetDate: "",
+          preTitleGetHireDate: "",
+          racial: "",
+          tel: "",
+          workAge: "",
+          password:"123"
+        },
         selected: [],
         editedIndex: -1,
+        total:0,
         headers: [
-          { text: '姓名',align: 'center',value: 'name',sortable: false},
+          //{ text: 'id',align: 'center', value: 'uid',sortable: false},
+          { text: '姓名',align: 'center',value: 'userName',sortable: false},
           { text: '年龄', value: 'age',align: 'center'},
           { text: '性别', value: 'gender', align: 'center'},
           { text: '学历', value: 'degree' ,align: 'center'},
@@ -183,74 +228,9 @@
           { text: '合同到期时间', value: 'contractEndDate' ,align: 'center'},
           { text: '操作', value: 'contractEndDate' ,align: 'center'}
         ],
-        humanList: [
-          {
-            name: 'A',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-11',
-            contractEndDate:'2018-01-22'
-          },
-          {
-            name: 'B',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-01',
-            joinSjyDate:'2018-01-02',
-            contractEndDate:'2018-01-03'
-          },
-          {
-            name: 'C',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-04',
-            joinSjyDate:'2018-01-05',
-            contractEndDate:'2018-01-06'
-          },
-          {
-            name: 'D',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-07',
-            joinSjyDate:'2018-01-08',
-            contractEndDate:'2018-01-09'
-          },
-          {
-            name: 'E',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-10',
-            joinSjyDate:'2018-01-11',
-            contractEndDate:'2018-01-11'
-          },
-          {
-            name: 'F',
-            age: 33,
-            gender: "男",
-            degree: "本科",
-            code: 6666,
-            tel: "13378333333",
-            joinWorkDate: '2018-01-12',
-            joinSjyDate:'2018-01-13',
-            contractEndDate:'2018-01-14'
-          }
-        ]
+        humanList: [],
+        humanSearchList:[],
+        cachedHumanList:[]
       }
     },
     components:{
@@ -305,16 +285,63 @@
           setTimeout(() => {
             this.editedItem = Object.assign({}, this.defaultItem)
             this.editedIndex = -1
-          }, 300)
+          }, 300);
+          let data = transferLocalData(this.editedItem);
+          console.log(data);
+          fetch("/pqms/users",{
+                method:"post",
+                headers:{
+                    "Content-Type":"application/json;charset=utf-8;"
+                },
+                body:JSON.stringify(data)
+            }).then( res => {
+                console.log(res);
+                console.log("");
+            }).catch(function(err) {
+                console.log("err",err);
+            });
       },
       save() {
+        console.log(this.editedItem)
         if (this.editedIndex > -1) {
           Object.assign(this.humanList[this.editedIndex], this.editedItem)
         } else {
           this.humanList.unshift(this.editedItem)
         }
         this.close()
+      },
+      getUserList(page=1,rowsPerPage=10,queryParam={}) {
+        let source
+        // 如果没有传参数,表示是普通的查询
+        // 如果有参数,表示这里是带参查询
+        // 需要把之前的结果缓存,因为当点击重置的时候,会把缓存的条目重新显示出来
+        if ( hasNoKey(queryParam) ) {
+          this.cachedHumanList = this.humanList;
+        }
+        fetch(`/pqms/userslist?current=${page}&rowCount=${rowsPerPage}`,
+        {
+          method:"post",
+          headers:{
+              "Content-Type":"application/json;charset=utf-8;"
+          },
+          body:JSON.stringify(queryParam)
+        }).then(response =>response.json()).then((response)=> {
+          //console.log(response);
+            this.total = response.total;
+            console.log( response.total);
+            let rows = response.rows.map((item)=>{
+              return transferDatabaseData(item);
+            })
+            this.humanList = rows;
+        })
+      },
+      handlePagination(aaa) {
+          let {page,rowsPerPage} = aaa;
+          this.getUserList(page,rowsPerPage,this.queryParam)
       }
+    },
+    beforeMount() {
+        this.getUserList();
     },
     watch:{
       selected:function(newVal) {

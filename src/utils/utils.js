@@ -3,3 +3,7 @@ export function resetKeyValue(obj) {
         obj[key] = "";
     });
 }
+
+export function hasNoKey(obj) {
+    return Object.keys(obj).length > 0;
+}

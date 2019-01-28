@@ -1,6 +1,5 @@
 <template>
   <div id="container">
-  <transition><alert ref="alert"></alert></transition>
   <v-app id="inspire" v-if="isLogin">
     <v-navigation-drawer
       fixed
@@ -73,11 +72,8 @@
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld';
 import PeopleManagement from './components/humanResource/PeopleManagement';
 import Login from './Login';
-import Alert from './components/shared/Alert'
-//import Login from './components/Login';
 const humanResourceList = ['人员管理'];
 
 export default {
@@ -99,9 +95,7 @@ export default {
   },
   components: {
     Login,
-    //HelloWorld,
     PeopleManagement,
-    Alert
   },
   beforeMount() {
       let isLogin = window.sessionStorage.getItem("isLogin");
@@ -109,7 +103,7 @@ export default {
           this.isLogin = true;
       } else {
           this.isLogin = false;
-      }     
+      }
   },
   watch:{
     isLogin:function(newValue){

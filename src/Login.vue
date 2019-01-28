@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-  const url="/login";
+  const url="/pqms/loginvalidate";
   export default {
     data() {
       return {
@@ -45,13 +45,31 @@
                 },
                 body:JSON.stringify({password:this.password,username:this.username})
             }).then( res => {
-                console.log(res);
-                this.$emit('login');
-                window.sessionStorage.setItem("isLogin",true);
-                this.$notify("success","登录成功");
+                return res.json();
+            }).then((response) => {
+                try{
+                    if (typeof response !== "object") {
+                        res = JSON.parse(responseres);
+                    }
+                }catch(e) {
+                    console.log("json parse error",e);
+                }
+                if (response.state === "ok") {
+                    window.sessionStorage.setItem("currentUser",this.username);
+                    window.sessionStorage.setItem("isLogin",true);
+                    this.$emit('login');
+                    this.$message({
+                        message:"登录成功!",
+                        type:"success"
+                    });
+                } else {
+                    this.$message({
+                        message:"用户名或密码错误!",
+                        type:"warning"
+                    });
+                }
             }).catch(function(err) {
                 console.log("err",err);
-                console.log("password or username is wrong!");
             });
         }
     }
