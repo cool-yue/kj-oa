@@ -289,7 +289,7 @@
           let data = transferLocalData(this.editedItem);
           console.log(data);
           fetch("/pqms/users",{
-                method:"post",
+                method:"put",
                 headers:{
                     "Content-Type":"application/json;charset=utf-8;"
                 },
@@ -310,7 +310,7 @@
         }
         this.close()
       },
-      getUserList(page=1,rowsPerPage=10,queryParam={}) {
+      getUserList(page=0,rowsPerPage=0,queryParam={}) {
         let source
         // 如果没有传参数,表示是普通的查询
         // 如果有参数,表示这里是带参查询
@@ -335,8 +335,8 @@
             this.humanList = rows;
         })
       },
-      handlePagination(aaa) {
-          let {page,rowsPerPage} = aaa;
+      handlePagination(pageSetting) {
+          let {page,rowsPerPage} = pageSetting;
           this.getUserList(page,rowsPerPage,this.queryParam)
       }
     },

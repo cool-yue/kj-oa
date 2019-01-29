@@ -4,7 +4,7 @@ import App from './App.vue'
 import { Message } from 'element-ui';
 import Alert from './components/shared/Alert';
 
-Vue.use(Message);
+Vue.component(Message.name,Message);
 Vue.prototype.$message = Message;
 
 

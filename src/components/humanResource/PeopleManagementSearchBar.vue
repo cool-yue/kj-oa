@@ -28,7 +28,8 @@
 </template>
 
 <script>
-    import timePicker from "../shared/timePicker"
+    import timePicker from "../shared/timePicker";
+    import { transferLocalData } from "./model.js";
     export default {
         data() {
             return {
@@ -55,9 +56,15 @@
               this.peopleManagementComp.humanList = this.peopleManagementComp.cachedHumanList;
           },
           searchRequest() {
-            console.log(this.search);
+            console.log(this.hasSetValue);
+            if (!this.hasSetValue) return;
             this.peopleManagementComp.getUserList(undefined,undefined,this.search)
           }
-        }
+        },
+          computed:{
+            hasSetValue() {
+              return !!(this.search.code || this.search.degree || this.search.bornDate || this.search.joinWorkDate || this.search.joinSjyDate || this.search.contractEndDate);
+            }
+          }
     }
 </script>
