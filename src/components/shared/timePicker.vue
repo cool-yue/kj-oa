@@ -5,11 +5,11 @@
     ref="menu"
     :close-on-content-click="false"
     v-model="menu"
-    :nudge-right="40"
     :return-value.sync="date"
     lazy
     transition="scale-transition"
     offset-y
+    left
     full-width
     min-width="290px"
   >
@@ -17,7 +17,7 @@
     slot="activator"
     v-model="date"
     :label="label"
-    prepend-icon="event"
+    append-icon="event"
     readonly
   ></v-text-field>
   <v-date-picker v-model="date" no-title scrollable locale="zh-cn">

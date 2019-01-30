@@ -2,15 +2,8 @@
   <div>
    <people-management-search-bar/>
    <v-toolbar flat color="white">
-      <v-toolbar-title>人员管理</v-toolbar-title>
-      <v-divider
-        class="mx-2"
-        inset
-        vertical
-      ></v-divider>
-      <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="700px">
-        <v-btn slot="activator" color="primary" dark class="mb-2">添加人员</v-btn>
+        <v-btn slot="activator" color="primary" dark class="mb-2">添加</v-btn>
 
         <v-card>
           <v-card-title>
@@ -104,8 +97,10 @@
 
       </v-dialog>
       <input type="file" ref="file" v-show="false" @change="handleImport($event)"/>
-      <v-btn  color="primary" dark class="mb-2" @click="importItem">批量导入</v-btn>
+      <v-btn  color="primary" dark class="mb-2" @click="importItem">导入</v-btn>
+      <v-btn  color="primary" dark class="mb-2" @click="" :disabled="deleteActivate">导出</v-btn>
       <v-btn  color="error" dark class="mb-2" @click="showDelete" :disabled="deleteActivate">删除</v-btn>
+      <v-btn  color="success" dark class="mb-2" @click="showItem(selected[0],false)" :disabled="!editActivate">编辑</v-btn>
     </v-toolbar>
 
   <v-data-table
@@ -127,7 +122,6 @@
       </td>
       <!--<td class="text-xs-center">{{ props.item.uid }}</td>-->
       <td>{{ props.item.userName }}</td>
-      <td class="text-xs-center">{{ props.item.age }}</td>
       <td class="text-xs-center">{{ props.item.gender }}</td>
       <td class="text-xs-center">{{ props.item.degree }}</td>
       <td class="text-xs-center">{{ props.item.code }}</td>
@@ -220,7 +214,6 @@
         headers: [
           //{ text: 'id',align: 'center', value: 'uid',sortable: false},
           { text: '姓名',align: 'center',value: 'userName',sortable: false},
-          { text: '年龄', value: 'age',align: 'center'},
           { text: '性别', value: 'gender', align: 'center'},
           { text: '学历', value: 'degree' ,align: 'center'},
           { text: '员工编码', value: 'code', align: 'center'},
@@ -254,6 +247,9 @@
       },
       deleteActivate() {
         return this.selected.length === 0;
+      },
+      editActivate() {
+        return this.selected.length === 1;
       }
     },
     methods:{
@@ -326,6 +322,7 @@
             let rows = response.rows.map((item)=>{
               return transferDatabaseData(item);
             })
+            console.log("rows",rows);
             this.humanList = rows;
         })
       },
@@ -355,9 +352,15 @@
           let data = transferLocalData(this.editedItem);
           let successMessage = method === "put"?"修改人员成功":"添加人员成功";
           let failMessage = method === "put"?"修改人员失败":"添加人员失败";
+          let url;
+          if (method==="put") {
+            url = "/pqms/users/" + data.uid;
+          } else {
+            url = "pqms/users"
+          }
           console.log(data);
           console.log(JSON.stringify(data));
-          fetch("/pqms/users",{
+          fetch(url,{
                 method,
                 headers:{
                     "Content-Type":"application/json;charset=utf-8;"
@@ -383,11 +386,13 @@
                 console.log(res);
                 return res.json();
             }).then(res => {
-               return res;
-               this.$message({type:"success",message:"删除人员成功"});
+              if (res.status >= 200 && res.status < 300 ) {
+                this.$message({type:"success",message:"删除人员成功"});
+              } else {
+                this.$message({type:"success",message:"删除人员失败"});
+              }
             }).catch(err => {
                 console.log("err",err);
-                this.$message({type:"error",message:"删除人员失败"});
             });
       }
     },
