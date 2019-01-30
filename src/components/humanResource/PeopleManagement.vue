@@ -27,7 +27,8 @@
                   <v-text-field v-model="editedItem.userName" label="姓名" :readonly="isViewDetail"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.gender" label="性别" :readonly="isViewDetail"></v-text-field>
+                  <!--<v-text-field v-model="editedItem.gender" label="性别" :readonly="isViewDetail"></v-text-field>-->
+                  <v-select :items="genderItems" v-model="editedItem.gender" label="性别" :readonly="isViewDetail"></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <v-text-field v-model="editedItem.racial" label="民族" :readonly="isViewDetail"></v-text-field>
@@ -114,9 +115,7 @@
     item-key="uid"
     select-all
     :pagination.sync="tableDefaultSetting"
-    :total-items = "total"
     class="elevation-1"
-    @update:pagination = "handlePagination"
   >
     <template slot="items" slot-scope="props">
       <td>
@@ -181,7 +180,10 @@
       return {
         showDeleteModal:false,
         isViewDetail:false,
+        isEdit:false,
+        isSearch:false,
         tableDefaultSetting,
+        genderItems:["男","女"],
         politicalItems:["群众","共青团员","中共党员"],
         degreeItems:["专科","本科","硕士研究生","博士研究生"],
         contractTypeItems:["有固定期限","无固定期限","人才派遣","劳务派遣","劳务分包"],
@@ -257,6 +259,7 @@
     methods:{
       showItem(item,isViewDetail) {
         this.isViewDetail = isViewDetail;
+        this.isEdit = true;
         this.editedIndex = this.humanList.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
@@ -271,6 +274,7 @@
         this.selected.forEach(item => {
           let index = this.humanList.indexOf(item);
           this.humanList.splice(index, 1);
+          this.handleDelete(item.uid);
         });
         this.selected = [];
       },
@@ -281,32 +285,22 @@
           console.log(event.target.files);
       },
       close () {
-          this.dialog = false
+          this.dialog = false;
+          this.isEdit = false;
           setTimeout(() => {
             this.editedItem = Object.assign({}, this.defaultItem)
             this.editedIndex = -1
           }, 300);
-          let data = transferLocalData(this.editedItem);
-          console.log(data);
-          fetch("/pqms/users",{
-                method:"put",
-                headers:{
-                    "Content-Type":"application/json;charset=utf-8;"
-                },
-                body:JSON.stringify(data)
-            }).then( res => {
-                console.log(res);
-                console.log("");
-            }).catch(function(err) {
-                console.log("err",err);
-            });
       },
       save() {
         console.log(this.editedItem)
         if (this.editedIndex > -1) {
           Object.assign(this.humanList[this.editedIndex], this.editedItem)
+        }
+        if (this.isEdit) {
+          this.handleUpdate("put")
         } else {
-          this.humanList.unshift(this.editedItem)
+          this.handleUpdate("post")
         }
         this.close()
       },
@@ -327,17 +321,74 @@
           body:JSON.stringify(queryParam)
         }).then(response =>response.json()).then((response)=> {
           //console.log(response);
-            this.total = response.total;
-            console.log( response.total);
+            //this.total = response.total;
+            //console.log( response.total);
             let rows = response.rows.map((item)=>{
               return transferDatabaseData(item);
             })
             this.humanList = rows;
         })
       },
-      handlePagination(pageSetting) {
-          let {page,rowsPerPage} = pageSetting;
-          this.getUserList(page,rowsPerPage,this.queryParam)
+      search(queryParam) {
+          if (!this.isSearch) {
+              this.isSearch = true;
+              this.cachedHumanList = this.humanList;
+          }
+          this.humanList = this.humanList.filter(item => {
+            return this.isMatch(item,queryParam);
+          });
+      },
+      isMatch(item,queryParam) {
+        for(let key in queryParam) {
+          if (queryParam[key]) {
+            if(item[key] === queryParam[key]) {
+              continue;
+            }else {
+              return false;
+            }
+          }
+        }
+        return true;
+      },
+      handleUpdate(method) {
+          console.log(this.editedItem);
+          let data = transferLocalData(this.editedItem);
+          let successMessage = method === "put"?"修改人员成功":"添加人员成功";
+          let failMessage = method === "put"?"修改人员失败":"添加人员失败";
+          console.log(data);
+          console.log(JSON.stringify(data));
+          fetch("/pqms/users",{
+                method,
+                headers:{
+                    "Content-Type":"application/json;charset=utf-8;"
+                },
+                body:JSON.stringify(data)
+            }).then( res => {
+                return res.json();
+            }).then(res => {
+                if ( method=== "post") {
+                  res = transferDatabaseData(res);
+                  this.humanList.unshift(res);
+                }
+                this.$message({type:"success",message:successMessage});
+            }).catch(err => {
+                console.log("err",err);
+                this.$message({type:"error",message:failMessage});
+            });
+      },
+      handleDelete(uid) {
+          fetch("/pqms/users/" + uid,{
+                method:"delete",
+            }).then(res => {
+                console.log(res);
+                return res.json();
+            }).then(res => {
+               return res;
+               this.$message({type:"success",message:"删除人员成功"});
+            }).catch(err => {
+                console.log("err",err);
+                this.$message({type:"error",message:"删除人员失败"});
+            });
       }
     },
     beforeMount() {

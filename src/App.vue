@@ -33,7 +33,7 @@
                 slot="activator"
                 flat
               >
-              <span>admin</span>
+              <span>{{ currentUser }}</span>
               <v-icon>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
@@ -81,6 +81,7 @@ export default {
   data () {
     return {
       isLogin:false,
+      currentUser:'',
       drawer:null,
       currentComponent:"PeopleManagement",
       humanResourceList,
@@ -108,6 +109,7 @@ export default {
   watch:{
     isLogin:function(newValue){
       console.log("isLogin",newValue);
+      this.currentUser = window.sessionStorage.getItem("currentUser");
     }
   }
 }

@@ -54,11 +54,17 @@
                 this.search[key] = "";
               });
               this.peopleManagementComp.humanList = this.peopleManagementComp.cachedHumanList;
+              this.peopleManagementComp.isSearch = false;
           },
           searchRequest() {
-            console.log(this.hasSetValue);
             if (!this.hasSetValue) return;
-            this.peopleManagementComp.getUserList(undefined,undefined,this.search)
+            let queryParam = Object.assign({},this.search);
+            for (let key in queryParam) {
+              if(!queryParam[key]) {
+                  delete queryParam[key];
+              }
+            }
+            this.peopleManagementComp.search(queryParam);
           }
         },
           computed:{
